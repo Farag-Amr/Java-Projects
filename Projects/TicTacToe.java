@@ -6,6 +6,7 @@ import java.awt.event.*;
 
 public class TicTacToe extends JFrame implements ActionListener {
     private JButton[] buttons = new JButton[9];
+    private JButton playAgainButton;
     private boolean xTurn = true;
     private JLabel turnLabel;
 
@@ -31,29 +32,50 @@ public class TicTacToe extends JFrame implements ActionListener {
         turnLabel.setFont(new Font("Arial", Font.PLAIN, 32));
         add(turnLabel, BorderLayout.SOUTH);
 
+        playAgainButton = new JButton("Play Again");
+        playAgainButton.setFont(new Font("Arial", Font.BOLD, 28));
+        playAgainButton.setBackground(Color.GREEN);
+        playAgainButton.setOpaque(true);
+        playAgainButton.setVisible(false);
+        playAgainButton.addActionListener(e -> resetBoard());
+        add(playAgainButton, BorderLayout.NORTH);
+
         setVisible(true);
     }
 
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
 
+        // If the button already has a value, ignore the click
         if (!btn.getText().equals(""))
             return;
 
+        // Set the button text to X or O depending on whose turn it is
         btn.setText(xTurn ? "X" : "O");
 
+        // Check if someone has won after this move
         int[] winIndices = checkWin();
         if (winIndices != null) {
+            // Highlight the winning buttons in orange
             for (int idx : winIndices) {
                 buttons[idx].setBackground(Color.ORANGE);
                 buttons[idx].setOpaque(true);
             }
+            // Show who won in the label
             turnLabel.setText((xTurn ? "X" : "O") + " wins!");
-            disableButtons(winIndices); // Only disable non-winning buttons
+            // Disable all non-winning buttons
+            disableButtons(winIndices);
+            // Show the play again button
+            playAgainButton.setVisible(true);
         } else if (isBoardFull()) {
+            // If the board is full and no one won, it's a draw
             turnLabel.setText("Draw!");
-            disableButtons(null); // Disable all buttons on draw
+            // Disable all buttons
+            disableButtons(null);
+            // Show the play again button
+            playAgainButton.setVisible(true);
         } else {
+            // Switch turns and update the label
             xTurn = !xTurn;
             turnLabel.setText((xTurn ? "X" : "O") + "'s Turn");
         }
@@ -127,6 +149,21 @@ public class TicTacToe extends JFrame implements ActionListener {
                 buttons[i].setEnabled(false);
             }
         }
+    }
+
+    private void resetBoard() {
+        // Reset all buttons to starting position. Empty, enabled and remove any color
+        for (JButton button : buttons) {
+            button.setText("");
+            button.setEnabled(true);
+            button.setBackground(null);
+            button.setOpaque(true);
+        }
+        // Set turn back to X and update the label
+        xTurn = true;
+        turnLabel.setText("X's Turn");
+        // Hide the play again button until the next game ends
+        playAgainButton.setVisible(false);
     }
 
     public static void main(String[] args) {
