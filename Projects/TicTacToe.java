@@ -10,12 +10,84 @@ public class TicTacToe extends JFrame implements ActionListener {
     private boolean xTurn = true;
     private JLabel turnLabel;
 
+    // Menu components
+    private JPanel menuPanel;
+    private JButton startButton;
+    private JButton colorsButton;
+    private JPanel gamePanel;
+    private JButton mainMenuButton;
+
     public TicTacToe() {
         setTitle("Tic Tac Toe");
-        setLayout(new GridLayout(3, 3));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1000, 1000);
         setLayout(new BorderLayout());
+
+        // --- MENU PANEL ---
+        menuPanel = new JPanel();
+        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
+        menuPanel.setBackground(new Color(255, 200, 60)); // Orangeish yellow
+
+        JLabel titleLabel = new JLabel("TicTacToe");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 72));
+        titleLabel.setForeground(Color.BLACK);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        startButton = new JButton("Play");
+        startButton.setFont(new Font("Arial", Font.BOLD, 48));
+        startButton.setBackground(Color.GREEN);
+        startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        startButton.addActionListener(e -> showGamePanel());
+
+        // Adds a simple icon with a rainbow image for the Colors button
+        colorsButton = new JButton("Colors");
+        colorsButton.setFont(new Font("Arial", Font.BOLD, 36));
+        colorsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Sets a rainbow gradient icon to the left of the text
+        colorsButton.setIcon(new Icon() {
+            @Override
+            public int getIconWidth() {
+                return 60;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return 36;
+            }
+
+            @Override
+            public void paintIcon(Component c, Graphics g, int x, int y) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                int w = getIconWidth();
+                int h = getIconHeight();
+                Color[] rainbow = {
+                        Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN, Color.CYAN, Color.BLUE, Color.MAGENTA
+                };
+                float[] fractions = {
+                        0f, 1f / 6f, 2f / 6f, 3f / 6f, 4f / 6f, 5f / 6f, 1f
+                };
+                LinearGradientPaint paint = new LinearGradientPaint(
+                        x, y, x + w, y, fractions, rainbow);
+                g2.setPaint(paint);
+                g2.fillRect(x, y, w, h);
+                g2.dispose();
+            }
+        });
+
+        // Add vertical spacing and buttons to menu
+        menuPanel.add(Box.createVerticalGlue());
+        menuPanel.add(titleLabel);
+        menuPanel.add(Box.createRigidArea(new Dimension(0, 60)));
+        menuPanel.add(startButton);
+        menuPanel.add(Box.createRigidArea(new Dimension(0, 40)));
+        menuPanel.add(colorsButton);
+        menuPanel.add(Box.createVerticalGlue());
+
+        add(menuPanel, BorderLayout.CENTER);
+
+        // --- GAME PANEL ---
+        gamePanel = new JPanel(new BorderLayout());
 
         JPanel boardPanel = new JPanel();
         boardPanel.setLayout(new GridLayout(3, 3));
@@ -26,11 +98,11 @@ public class TicTacToe extends JFrame implements ActionListener {
             buttons[i].addActionListener(this);
             boardPanel.add(buttons[i]);
         }
-        add(boardPanel, BorderLayout.CENTER);
+        gamePanel.add(boardPanel, BorderLayout.CENTER);
 
         turnLabel = new JLabel("X's Turn", SwingConstants.CENTER);
         turnLabel.setFont(new Font("Arial", Font.PLAIN, 32));
-        add(turnLabel, BorderLayout.SOUTH);
+        gamePanel.add(turnLabel, BorderLayout.SOUTH);
 
         playAgainButton = new JButton("Play Again");
         playAgainButton.setFont(new Font("Arial", Font.BOLD, 28));
@@ -38,12 +110,58 @@ public class TicTacToe extends JFrame implements ActionListener {
         playAgainButton.setOpaque(true);
         playAgainButton.setVisible(false);
         playAgainButton.addActionListener(e -> resetBoard());
-        add(playAgainButton, BorderLayout.NORTH);
+
+        mainMenuButton = new JButton("Main Menu");
+        mainMenuButton.setFont(new Font("Arial", Font.BOLD, 28));
+        mainMenuButton.setBackground(Color.LIGHT_GRAY);
+        mainMenuButton.setOpaque(true);
+        mainMenuButton.setVisible(false);
+        mainMenuButton.addActionListener(e -> showMainMenu());
+
+        // Create a panel for the buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+        playAgainButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mainMenuButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Expands buttons to fill the width of the panel
+        playAgainButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        mainMenuButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+        playAgainButton.setPreferredSize(new Dimension(0, 60));
+        mainMenuButton.setPreferredSize(new Dimension(0, 60));
+
+        buttonPanel.add(playAgainButton);
+        buttonPanel.add(mainMenuButton);
+        buttonPanel.setOpaque(false);
+
+        gamePanel.add(buttonPanel, BorderLayout.NORTH);
+        gamePanel.add(boardPanel, BorderLayout.CENTER);
+        gamePanel.add(turnLabel, BorderLayout.SOUTH);
 
         setVisible(true);
     }
 
+    // Show the game panel and hide the menu
+    private void showGamePanel() {
+        remove(menuPanel);
+        add(gamePanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    // Show the main menu
+    private void showMainMenu() {
+        remove(gamePanel);
+        add(menuPanel, BorderLayout.CENTER);
+        mainMenuButton.setVisible(false);
+        playAgainButton.setVisible(false);
+        resetBoard();
+        revalidate();
+        repaint();
+    }
+
     public void actionPerformed(ActionEvent e) {
+        // Get the button that was clicked
         JButton btn = (JButton) e.getSource();
 
         // If the button already has a value, ignore the click
@@ -65,15 +183,17 @@ public class TicTacToe extends JFrame implements ActionListener {
             turnLabel.setText((xTurn ? "X" : "O") + " wins!");
             // Disable all non-winning buttons
             disableButtons(winIndices);
-            // Show the play again button
+            // Show the play again button and Main Menu button
             playAgainButton.setVisible(true);
+            mainMenuButton.setVisible(true);
         } else if (isBoardFull()) {
             // If the board is full and no one won, it's a draw
             turnLabel.setText("Draw!");
             // Disable all buttons
             disableButtons(null);
-            // Show the play again button
+            // Show the play again button and Main Menu button
             playAgainButton.setVisible(true);
+            mainMenuButton.setVisible(true);
         } else {
             // Switch turns and update the label
             xTurn = !xTurn;
@@ -162,8 +282,8 @@ public class TicTacToe extends JFrame implements ActionListener {
         // Set turn back to X and update the label
         xTurn = true;
         turnLabel.setText("X's Turn");
-        // Hide the play again button until the next game ends
-        playAgainButton.setVisible(false);
+        playAgainButton.setVisible(false);// Hide the play again button until the next game ends
+        mainMenuButton.setVisible(false); // Hide mainMenuButton as well
     }
 
     public static void main(String[] args) {
