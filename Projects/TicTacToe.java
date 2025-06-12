@@ -37,29 +37,23 @@ public class TicTacToe extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         JButton btn = (JButton) e.getSource();
 
-        // If the tile is not blank (Already played by someone), do nothing
         if (!btn.getText().equals(""))
             return;
 
-        // Set the tile to X or O depending on whose turn it is
         btn.setText(xTurn ? "X" : "O");
 
-        // Checks if someone has won
         int[] winIndices = checkWin();
         if (winIndices != null) {
-            // Highlight the winning tiles
             for (int idx : winIndices) {
                 buttons[idx].setBackground(Color.ORANGE);
                 buttons[idx].setOpaque(true);
             }
-            // Show the winner in the label then disable further moves
             turnLabel.setText((xTurn ? "X" : "O") + " wins!");
-            disableButtons();
+            disableButtons(winIndices); // Only disable non-winning buttons
         } else if (isBoardFull()) {
-            // If the board is full and no one has won, it's a draw
             turnLabel.setText("Draw!");
+            disableButtons(null); // Disable all buttons on draw
         } else {
-            // Switch turns and update the label
             xTurn = !xTurn;
             turnLabel.setText((xTurn ? "X" : "O") + "'s Turn");
         }
@@ -112,10 +106,25 @@ public class TicTacToe extends JFrame implements ActionListener {
         return true;
     }
 
-    private void disableButtons() {
-        for (JButton button : buttons) {
-            for (ActionListener al : button.getActionListeners()) {
-                button.removeActionListener(al);
+    private void disableButtons(int[] winIndices) {
+        if (winIndices == null) {
+            // Disable all buttons (for a draw)
+            for (JButton button : buttons) {
+                button.setEnabled(false);
+            }
+            return;
+        }
+        // Disable only non-winning buttons
+        for (int i = 0; i < buttons.length; i++) {
+            boolean isWinning = false;
+            for (int idx : winIndices) {
+                if (i == idx) {
+                    isWinning = true;
+                    break;
+                }
+            }
+            if (!isWinning) {
+                buttons[i].setEnabled(false);
             }
         }
     }
