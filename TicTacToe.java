@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class TicTacToe extends JFrame {
+public class TicTacToe extends JFrame implements ActionListener {
     private JButton[] buttons = new JButton[9];
+    private boolean xTurn = true;
 
     public TicTacToe() {
         setTitle("Tic Tac Toe");
@@ -16,6 +18,14 @@ public class TicTacToe extends JFrame {
             add(buttons[i]);
         }
         setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        JButton btn = (JButton) e.getSource();
+        if (!btn.getText().equals(""))
+            return;
+        btn.setText(xTurn ? "X" : "O");
+        xTurn = !xTurn;
     }
 
     public static void main(String[] args) {
