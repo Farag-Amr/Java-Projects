@@ -37,8 +37,58 @@ public class TicTacToe extends JFrame implements ActionListener {
         if (!btn.getText().equals(""))
             return;
         btn.setText(xTurn ? "X" : "O");
-        xTurn = !xTurn;
-        turnLabel.setText((xTurn ? "X" : "O") + "'s Turn");
+        if (checkWin()) {
+            turnLabel.setText((xTurn ? "X" : "O") + " wins!");
+            disableButtons();
+        } else if (isBoardFull()) {
+            turnLabel.setText("Draw!");
+        } else {
+            xTurn = !xTurn;
+            turnLabel.setText((xTurn ? "X" : "O") + "'s Turn");
+        }
+    }
+
+    private boolean checkWin() {
+        String[][] board = new String[3][3];
+        for (int i = 0; i < 9; i++) {
+            board[i / 3][i % 3] = buttons[i].getText();
+        }
+        // Check rows and columns
+        for (int i = 0; i < 3; i++) {
+            if (!board[i][0].equals("") &&
+                    board[i][0].equals(board[i][1]) &&
+                    board[i][1].equals(board[i][2]))
+                return true;
+            if (!board[0][i].equals("") &&
+                    board[0][i].equals(board[1][i]) &&
+                    board[1][i].equals(board[2][i]))
+                return true;
+        }
+        // Check diagonals
+        if (!board[0][0].equals("") &&
+                board[0][0].equals(board[1][1]) &&
+                board[1][1].equals(board[2][2]))
+            return true;
+        if (!board[0][2].equals("") &&
+                board[0][2].equals(board[1][1]) &&
+                board[1][1].equals(board[2][0]))
+            return true;
+        return false;
+    }
+
+    private boolean isBoardFull() {
+        for (JButton button : buttons) {
+            if (button.getText().equals("")) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void disableButtons() {
+        for (JButton button : buttons) {
+            button.setEnabled(false);
+        }
     }
 
     public static void main(String[] args) {
