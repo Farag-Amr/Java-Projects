@@ -175,7 +175,7 @@ public class TicTacToe extends JFrame implements ActionListener {
         colorsMenuPanel.add(xLabel);
 
         // Dropdown menu for X
-        String[] xOptions = { "Black", "Red", "Blue", "Green", "Orange", "Purple", "Pink" };
+        String[] xOptions = { "Black", "Red", "Blue", "Green", "Purple", "Pink" };
         JComboBox<String> xDropdown = new JComboBox<>(xOptions);
         xDropdown.setFont(new Font("Arial", Font.PLAIN, 28));
         xDropdown.setBounds(40, 230, 180, 50);
@@ -219,7 +219,7 @@ public class TicTacToe extends JFrame implements ActionListener {
         colorsMenuPanel.add(oLabel);
 
         // Dropdown menu for O
-        String[] oOptions = { "Black", "Red", "Blue", "Green", "Orange", "Purple", "Pink" };
+        String[] oOptions = { "Black", "Red", "Blue", "Green", "Purple", "Pink" };
         JComboBox<String> oDropdown = new JComboBox<>(oOptions);
         oDropdown.setFont(new Font("Arial", Font.PLAIN, 28));
         oDropdown.setBounds(780, 230, 180, 50);
@@ -412,8 +412,6 @@ public class TicTacToe extends JFrame implements ActionListener {
                 return Color.BLUE;
             case "Green":
                 return Color.GREEN;
-            case "Orange":
-                return Color.ORANGE;
             case "Purple":
                 return new Color(128, 0, 128);
             case "Pink":
