@@ -2,7 +2,6 @@ package Projects.Calculator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 // This is a simple calculator application in Java using Swing.
 // It provides basic arithmetic operations like addition, subtraction, multiplication, and division.
@@ -49,14 +48,43 @@ public class Calculator {
                         if (!current.isEmpty()) {
                             display.setText(current.substring(0, current.length() - 1));
                         }
-                    } else if (!text.equals("()") && !text.equals("=")) {
-                        // Prevent operator as first char except '-'
+                    } else if (text.equals("()")) {
+                        long openCount = current.chars().filter(ch -> ch == '(').count();
+                        long closeCount = current.chars().filter(ch -> ch == ')').count();
+                        if (openCount == 0 && closeCount == 0) {
+                            display.setText(current + "(");
+                        } else if (openCount > closeCount) {
+                            int lastOpen = current.lastIndexOf('(');
+                            boolean hasNumber = false;
+                            for (int i = lastOpen + 1; i < current.length(); i++) {
+                                if (Character.isDigit(current.charAt(i))) {
+                                    hasNumber = true;
+                                    break;
+                                }
+                            }
+                            if (hasNumber) {
+                                // Check if the most recent char is an operator
+                                int lastIdx = current.length() - 1;
+                                while (lastIdx >= 0
+                                        && (current.charAt(lastIdx) == '(' || current.charAt(lastIdx) == ')')) {
+                                    lastIdx--;
+                                }
+                                if (lastIdx >= 0 && operators.indexOf(current.charAt(lastIdx)) != -1) {
+                                    display.setText(current + "(");
+                                } else {
+                                    display.setText(current + ")");
+                                }
+                            } else {
+                                display.setText(current + "(");
+                            }
+                        } else {
+                            display.setText(current + "(");
+                        }
+                    } else if (!text.equals("=")) {
                         if (current.isEmpty() && operators.contains(text) && !text.equals("-")) {
                             return;
                         }
-                        // Prevent two operators in a row, except for '-'
                         if (operators.contains(text)) {
-                            // Look for the last non-parenthesis character
                             int i = current.length() - 1;
                             while (i >= 0 && (current.charAt(i) == '(' || current.charAt(i) == ')')) {
                                 i--;
@@ -65,7 +93,6 @@ public class Calculator {
                                 char last = current.charAt(i);
                                 if (operators.indexOf(last) != -1) {
                                     if (text.equals("-")) {
-                                        // Only allow '-' after another operator if the next char is '('
                                         if (current.length() > i + 1 && current.charAt(i + 1) == '(') {
                                             // allow
                                         } else {
