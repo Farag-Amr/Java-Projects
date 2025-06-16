@@ -41,8 +41,14 @@ public class Calculator {
                 JButton btn = new JButton(text);
                 btn.setFont(new Font("Arial", Font.BOLD, 24));
                 btn.addActionListener(e -> {
-                    // Only add to display if not Clr, Del, or ()
-                    if (!text.equals("Clr") && !text.equals("Del") && !text.equals("()") && !text.equals("=")) {
+                    if (text.equals("Clr")) {
+                        display.setText("");
+                    } else if (text.equals("Del")) {
+                        String current = display.getText();
+                        if (!current.isEmpty()) {
+                            display.setText(current.substring(0, current.length() - 1));
+                        }
+                    } else if (!text.equals("()") && !text.equals("=")) {
                         display.setText(display.getText() + text);
                     }
                 });
