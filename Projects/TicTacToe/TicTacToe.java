@@ -1,4 +1,4 @@
-package Projects;
+package Projects.TicTacToe;
 
 import javax.swing.*;
 import java.awt.*;
