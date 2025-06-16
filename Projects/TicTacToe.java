@@ -21,6 +21,12 @@ public class TicTacToe extends JFrame implements ActionListener {
     private Color xColor = Color.BLACK;
     private Color oColor = Color.BLACK;
 
+    // Win counters
+    private int xWins = 0;
+    private int oWins = 0;
+    private JLabel xWinLabel;
+    private JLabel oWinLabel;
+
     public TicTacToe() {
         setTitle("Tic Tac Toe");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +85,7 @@ public class TicTacToe extends JFrame implements ActionListener {
             }
         });
 
-        // Add spacing and buttons to the menu
+        // Adds spacing and buttons to the menu
         menuPanel.add(Box.createVerticalGlue());
         menuPanel.add(titleLabel);
         menuPanel.add(Box.createRigidArea(new Dimension(0, 60)));
@@ -104,9 +110,28 @@ public class TicTacToe extends JFrame implements ActionListener {
         }
         gamePanel.add(boardPanel, BorderLayout.CENTER);
 
+        // Win counter labels for X and O
+        xWinLabel = new JLabel("X Wins: 0");
+        xWinLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        xWinLabel.setHorizontalAlignment(SwingConstants.LEFT);
+
+        oWinLabel = new JLabel("O Wins: 0");
+        oWinLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        oWinLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        // Creates the turn label
         turnLabel = new JLabel("X's Turn", SwingConstants.CENTER);
         turnLabel.setFont(new Font("Arial", Font.PLAIN, 32));
-        gamePanel.add(turnLabel, BorderLayout.SOUTH);
+
+        // Panel for win counters and player turn label
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setOpaque(false);
+        bottomPanel.add(xWinLabel, BorderLayout.WEST);
+        bottomPanel.add(turnLabel, BorderLayout.CENTER);
+        bottomPanel.add(oWinLabel, BorderLayout.EAST);
+
+        // Adds the combined panel to the bottom of the game panel
+        gamePanel.add(bottomPanel, BorderLayout.SOUTH);
 
         playAgainButton = new JButton("Play Again");
         playAgainButton.setFont(new Font("Arial", Font.BOLD, 28));
@@ -139,7 +164,6 @@ public class TicTacToe extends JFrame implements ActionListener {
 
         gamePanel.add(buttonPanel, BorderLayout.NORTH);
         gamePanel.add(boardPanel, BorderLayout.CENTER);
-        gamePanel.add(turnLabel, BorderLayout.SOUTH);
 
         // Colors menu panel setup
         colorsMenuPanel = new JPanel(null);
@@ -156,14 +180,14 @@ public class TicTacToe extends JFrame implements ActionListener {
                 FontMetrics fm = g2.getFontMetrics();
                 int x = 0;
                 int y = fm.getAscent();
-                // Draw black outline
+                // Draws black outline
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(4));
                 g2.drawString(text, x + 1, y + 1);
                 g2.drawString(text, x - 1, y - 1);
                 g2.drawString(text, x + 1, y - 1);
                 g2.drawString(text, x - 1, y + 1);
-                // Draw the X in the selected color
+                // Draws the X in the selected color
                 g2.setColor(getForeground());
                 g2.drawString(text, x, y);
                 g2.dispose();
@@ -200,7 +224,7 @@ public class TicTacToe extends JFrame implements ActionListener {
                 FontMetrics fm = g2.getFontMetrics();
                 int x = 0;
                 int y = fm.getAscent();
-                // Draw black outline
+                // Draws black outline
                 g2.setColor(Color.BLACK);
                 g2.setStroke(new BasicStroke(4));
                 g2.drawString(text, x + 1, y + 1);
@@ -296,6 +320,13 @@ public class TicTacToe extends JFrame implements ActionListener {
             }
             // Show who won in the label
             turnLabel.setText((xTurn ? "X" : "O") + " wins!");
+            if (xTurn) {
+                xWins++;
+                xWinLabel.setText("X Wins: " + xWins);
+            } else {
+                oWins++;
+                oWinLabel.setText("O Wins: " + oWins);
+            }
             // Disable all non-winning buttons
             disableButtons(winIndices);
             // Show the play again button and Main Menu button
