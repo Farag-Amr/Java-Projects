@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+// This is a Tic Tac Toe game implemented in Java using Swing.
+// It features a main menu, a game board, color customization for X and O, and win counters.
 public class TicTacToe extends JFrame implements ActionListener {
     private JButton[] buttons = new JButton[9];
     private JButton playAgainButton;
