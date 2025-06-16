@@ -41,15 +41,43 @@ public class Calculator {
                 JButton btn = new JButton(text);
                 btn.setFont(new Font("Arial", Font.BOLD, 24));
                 btn.addActionListener(e -> {
+                    String current = display.getText();
+                    String operators = "+-x÷^";
                     if (text.equals("Clr")) {
                         display.setText("");
                     } else if (text.equals("Del")) {
-                        String current = display.getText();
                         if (!current.isEmpty()) {
                             display.setText(current.substring(0, current.length() - 1));
                         }
                     } else if (!text.equals("()") && !text.equals("=")) {
-                        display.setText(display.getText() + text);
+                        // Prevent operator as first char except '-'
+                        if (current.isEmpty() && operators.contains(text) && !text.equals("-")) {
+                            return;
+                        }
+                        // Prevent two operators in a row, except for '-'
+                        if (operators.contains(text)) {
+                            // Look for the last non-parenthesis character
+                            int i = current.length() - 1;
+                            while (i >= 0 && (current.charAt(i) == '(' || current.charAt(i) == ')')) {
+                                i--;
+                            }
+                            if (i >= 0) {
+                                char last = current.charAt(i);
+                                if (operators.indexOf(last) != -1) {
+                                    if (text.equals("-")) {
+                                        // Only allow '-' after another operator if the next char is '('
+                                        if (current.length() > i + 1 && current.charAt(i + 1) == '(') {
+                                            // allow
+                                        } else {
+                                            return;
+                                        }
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                        display.setText(current + text);
                     }
                 });
                 buttonPanel.add(btn);
