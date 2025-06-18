@@ -3,7 +3,8 @@ package Projects.Calculator;
 import javax.swing.*;
 import java.awt.*;
 
-// Simple calculator app using Java Swing
+// This is a simple calculator application in Java using Swing.
+// It provides basic arithmetic operations like addition, subtraction, multiplication, and division.
 public class Calculator {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -16,13 +17,13 @@ public class Calculator {
             // --- Top display area for showing input/output ---
             JTextField display = new JTextField();
             display.setFont(new Font("Arial", Font.BOLD, 32));
-            display.setEditable(false); // User can't type directly
+            display.setEditable(false); // User CANNOT type directly
             display.setHorizontalAlignment(JTextField.RIGHT); // Text is right-aligned
             display.setBackground(Color.WHITE);
             display.setBorder(BorderFactory.createEmptyBorder(20, 10, 20, 10));
 
             JPanel topPanel = new JPanel(new BorderLayout());
-            topPanel.setPreferredSize(new Dimension(400, 150)); // Top 25% of window
+            topPanel.setPreferredSize(new Dimension(400, 150));
             topPanel.setBackground(Color.WHITE);
             topPanel.add(display, BorderLayout.CENTER);
             frame.add(topPanel, BorderLayout.NORTH);
@@ -36,19 +37,18 @@ public class Calculator {
                     "1", "2", "3", "+",
                     "0", ".", "Del", "="
             };
-            // Add each button to the panel
+            // Adds each button to the panel
             for (String text : buttons) {
                 JButton btn = new JButton(text);
                 btn.setFont(new Font("Arial", Font.BOLD, 24));
-                // What happens when a button is clicked
                 btn.addActionListener(e -> {
                     String current = display.getText();
                     String operators = "+-x÷^";
                     if (text.equals("Clr")) {
-                        // Clear all text from the display
+                        // Clears all text from the display
                         display.setText("");
                     } else if (text.equals("Del")) {
-                        // Remove the last character from the display
+                        // Removes the last character from the display
                         if (!current.isEmpty()) {
                             display.setText(current.substring(0, current.length() - 1));
                         }
@@ -88,9 +88,59 @@ public class Calculator {
                             // Default to adding (
                             display.setText(current + "(");
                         }
-                    } else if (!text.equals("=")) {
+                    } else if (text.equals("=")) {
+                        // --- Parsing section for '=' ---
+                        String expr = display.getText();
+                        try {
+                            double result = parse(expr);
+                            // Only show .0 if not a whole number
+                            if (result == (long) result) {
+                                display.setText(Long.toString((long) result));
+                            } else {
+                                display.setText(Double.toString(result));
+                            }
+                        } catch (Exception ex) {
+                            display.setText("Error");
+                        }
+                    } else {
+                        // --- Standalone 0 replacement logic with all rules ---
+                        // Finds the start of the current number segment
+                        int lastNonDigit = -1;
+                        for (int i = current.length() - 1; i >= 0; i--) {
+                            char ch = current.charAt(i);
+                            if (!Character.isDigit(ch) && ch != '.') {
+                                lastNonDigit = i;
+                                break;
+                            }
+                        }
+                        int numStart = lastNonDigit + 1;
+                        boolean replacedZero = false;
+                        boolean replacingZeroWithMinus = false;
+                        // Check for standalone 0 in the current number segment
+                        if (numStart < current.length() && current.charAt(numStart) == '0') {
+                            boolean isStandaloneZero = true;
+                            if (numStart + 1 < current.length() && current.charAt(numStart + 1) == '.') {
+                                isStandaloneZero = false;
+                            }
+                            if (numStart + 1 < current.length() && Character.isDigit(current.charAt(numStart + 1))) {
+                                isStandaloneZero = false;
+                            }
+                            // Only replace if not adding a decimal
+                            if (isStandaloneZero && !text.equals(".")) {
+                                // Allow '-' to replace a leading 0 at the start
+                                if (numStart == 0 && text.equals("-")) {
+                                    display.setText("-");
+                                    return;
+                                } else {
+                                    String newText = current.substring(0, numStart) + text;
+                                    current = newText;
+                                    replacedZero = true;
+                                }
+                            }
+                        }
                         // Prevent operator as first char except '-'
-                        if (current.isEmpty() && operators.contains(text) && !text.equals("-")) {
+                        if (!replacingZeroWithMinus && (replacedZero ? current.length() == 1 : current.isEmpty())
+                                && operators.contains(text) && !text.equals("-")) {
                             return;
                         }
                         // Prevent two operators in a row, except for special '-' rule
@@ -103,7 +153,6 @@ public class Calculator {
                                 char last = current.charAt(i);
                                 if (operators.indexOf(last) != -1) {
                                     if (text.equals("-")) {
-                                        // Only allow '-' after another operator if the next char is '('
                                         if (current.length() > i + 1 && current.charAt(i + 1) == '(') {
                                             // allow
                                         } else {
@@ -115,8 +164,11 @@ public class Calculator {
                                 }
                             }
                         }
-                        // Add the button text to the display
-                        display.setText(current + text);
+                        if (replacedZero) {
+                            display.setText(current);
+                        } else {
+                            display.setText(current + text);
+                        }
                     }
                 });
                 buttonPanel.add(btn);
@@ -124,8 +176,51 @@ public class Calculator {
             buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             frame.add(buttonPanel, BorderLayout.CENTER);
 
-            // Show the window
             frame.setVisible(true);
         });
+    }
+
+    private static double parse(String expr) {
+        // Remove spaces
+        expr = expr.replace(" ", "");
+
+        // Handles negative numbers at the start or after '('
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < expr.length(); i++) {
+            char c = expr.charAt(i);
+            if (c == '-' && (i == 0 || expr.charAt(i - 1) == '(')) {
+                sb.append("~"); // Uses ~ as a marker for negative numbers
+            } else {
+                sb.append(c);
+            }
+        }
+        String replaced = sb.toString();
+
+        // Split by '+'
+        String[] plusParts = replaced.split("\\+");
+        double sum = 0;
+        for (String part : plusParts) {
+            // Now split by '-' (but not if it's a negative marker)
+            double subtotal = 0;
+            String[] minusParts = part.split("(?<=\\d)-");
+            for (int i = 0; i < minusParts.length; i++) {
+                String p = minusParts[i];
+                if (p.isEmpty())
+                    continue;
+                double val;
+                if (p.contains("~")) {
+                    val = -Double.parseDouble(p.replace("~", ""));
+                } else {
+                    val = Double.parseDouble(p);
+                }
+                if (i == 0) {
+                    subtotal = val;
+                } else {
+                    subtotal -= val;
+                }
+            }
+            sum += subtotal;
+        }
+        return sum;
     }
 }
