@@ -99,6 +99,12 @@ public class Calculator {
                             } else {
                                 display.setText(Double.toString(result));
                             }
+                        } catch (ArithmeticException ex) {
+                            if ("DIV0".equals(ex.getMessage())) {
+                                display.setText("ERROR DIVISION BY 0");
+                            } else {
+                                display.setText("Error");
+                            }
                         } catch (Exception ex) {
                             display.setText("Error");
                         }
@@ -180,7 +186,7 @@ public class Calculator {
         });
     }
 
-    private static double parse(String expr) {
+    private static double parse(String expr) throws ArithmeticException {
         // Remove spaces
         expr = expr.replace(" ", "");
 
@@ -214,9 +220,9 @@ public class Calculator {
         return parseNoParen(replaced);
     }
 
-    // Helper to parse expressions with +, -, x, and negative numbers, but no
+    // Helper to parse expressions with +, -, x, ÷ and negative numbers, but no
     // parentheses
-    private static double parseNoParen(String expr) {
+    private static double parseNoParen(String expr) throws ArithmeticException {
         // Split by '+'
         String[] plusParts = expr.split("\\+");
         double sum = 0;
@@ -229,19 +235,34 @@ public class Calculator {
                 if (p.isEmpty())
                     continue;
                 double val;
-                // Handle multiplication inside each minus part
-                String[] multParts = p.split("x");
+                // Handles multiplication and division inside each minus part
+                String[] multDivParts = p.split("x");
                 double multResult = 1;
-                for (String m : multParts) {
-                    if (m.isEmpty())
-                        continue;
-                    double mv;
-                    if (m.contains("~")) {
-                        mv = -Double.parseDouble(m.replace("~", ""));
-                    } else {
-                        mv = Double.parseDouble(m);
+                for (int j = 0; j < multDivParts.length; j++) {
+                    String m = multDivParts[j];
+                    // Handles division within each multiplication segment
+                    String[] divParts = m.split("÷");
+                    double divResult = 0;
+                    for (int k = 0; k < divParts.length; k++) {
+                        String d = divParts[k];
+                        if (d.isEmpty())
+                            continue;
+                        double dv;
+                        if (d.contains("~")) {
+                            dv = -Double.parseDouble(d.replace("~", ""));
+                        } else {
+                            dv = Double.parseDouble(d);
+                        }
+                        if (k == 0) {
+                            divResult = dv;
+                        } else {
+                            if (dv == 0) {
+                                throw new ArithmeticException("DIV0");
+                            }
+                            divResult /= dv;
+                        }
                     }
-                    multResult *= mv;
+                    multResult *= divResult;
                 }
                 val = multResult;
                 if (i == 0) {
