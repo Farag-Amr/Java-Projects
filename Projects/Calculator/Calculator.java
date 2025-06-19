@@ -196,8 +196,29 @@ public class Calculator {
         }
         String replaced = sb.toString();
 
+        // --- Parentheses parsing ---
+        while (replaced.contains("(")) {
+            int close = replaced.indexOf(')');
+            if (close == -1)
+                break; // Unmatched parenthesis, stop
+            int open = replaced.lastIndexOf('(', close);
+            if (open == -1)
+                break; // Unmatched parenthesis, stop
+            String inside = replaced.substring(open + 1, close);
+            double insideVal = parseNoParen(inside);
+            // Replace the parenthesis with the result
+            replaced = replaced.substring(0, open) + insideVal + replaced.substring(close + 1);
+        }
+
+        // Evaluate the remaining expression (no parentheses left)
+        return parseNoParen(replaced);
+    }
+
+    // Helper to parse expressions with +, -, x, and negative numbers, but no
+    // parentheses
+    private static double parseNoParen(String expr) {
         // Split by '+'
-        String[] plusParts = replaced.split("\\+");
+        String[] plusParts = expr.split("\\+");
         double sum = 0;
         for (String part : plusParts) {
             // Now split by '-' (but not if it's a negative marker)
@@ -208,11 +229,21 @@ public class Calculator {
                 if (p.isEmpty())
                     continue;
                 double val;
-                if (p.contains("~")) {
-                    val = -Double.parseDouble(p.replace("~", ""));
-                } else {
-                    val = Double.parseDouble(p);
+                // Handle multiplication inside each minus part
+                String[] multParts = p.split("x");
+                double multResult = 1;
+                for (String m : multParts) {
+                    if (m.isEmpty())
+                        continue;
+                    double mv;
+                    if (m.contains("~")) {
+                        mv = -Double.parseDouble(m.replace("~", ""));
+                    } else {
+                        mv = Double.parseDouble(m);
+                    }
+                    multResult *= mv;
                 }
+                val = multResult;
                 if (i == 0) {
                     subtotal = val;
                 } else {
