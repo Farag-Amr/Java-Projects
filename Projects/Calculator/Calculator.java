@@ -91,6 +91,11 @@ public class Calculator {
                     } else if (text.equals("=")) {
                         // --- Parsing section for '=' ---
                         String expr = display.getText();
+                        if (expr.endsWith("^") || expr.endsWith("+") || expr.endsWith("-") || expr.endsWith("x")
+                                || expr.endsWith("÷")) {
+                            display.setText("Error: Incomplete Expression");
+                            return;
+                        }
                         try {
                             double result = parse(expr);
                             // Only show .0 if not a whole number
@@ -220,7 +225,7 @@ public class Calculator {
         return parseNoParen(replaced);
     }
 
-    // Helper to parse expressions with +, -, x, ÷ and negative numbers, but no
+    // Helper to parse expressions with +, -, x, ÷, ^ and negative numbers, but no
     // parentheses
     private static double parseNoParen(String expr) throws ArithmeticException {
         // Split by '+'
@@ -247,19 +252,15 @@ public class Calculator {
                         String d = divParts[k];
                         if (d.isEmpty())
                             continue;
-                        double dv;
-                        if (d.contains("~")) {
-                            dv = -Double.parseDouble(d.replace("~", ""));
-                        } else {
-                            dv = Double.parseDouble(d);
-                        }
+                        // --- Exponent parsing (highest precedence) ---
+                        double expResult = parseExponent(d);
                         if (k == 0) {
-                            divResult = dv;
+                            divResult = expResult;
                         } else {
-                            if (dv == 0) {
+                            if (expResult == 0) {
                                 throw new ArithmeticException("DIV0");
                             }
-                            divResult /= dv;
+                            divResult /= expResult;
                         }
                     }
                     multResult *= divResult;
@@ -274,5 +275,38 @@ public class Calculator {
             sum += subtotal;
         }
         return sum;
+    }
+
+    // Helper to parse numbers with ~ as negative marker
+    private static double parseSignedDouble(String s) {
+        if (s.isEmpty() || s.equals("~"))
+            return 0;
+        if (s.startsWith("~")) {
+            if (s.length() == 1)
+                return 0;
+            return -Double.parseDouble(s.substring(1));
+        } else {
+            return Double.parseDouble(s);
+        }
+    }
+
+    // Helper for right-associative exponentiation
+    private static double parseExponent(String expr) {
+        String[] expParts = expr.split("\\^");
+        // Remove empty parts from the right
+        int n = expParts.length;
+        int idx = n - 1;
+        while (idx >= 0 && (expParts[idx].isEmpty() || expParts[idx].equals("~")))
+            idx--;
+        if (idx < 0)
+            return 0;
+        double result = parseSignedDouble(expParts[idx]);
+        for (int i = idx - 1; i >= 0; i--) {
+            if (expParts[i].isEmpty() || expParts[i].equals("~"))
+                continue;
+            double base = parseSignedDouble(expParts[i]);
+            result = Math.pow(base, result);
+        }
+        return result;
     }
 }
