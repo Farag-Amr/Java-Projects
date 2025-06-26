@@ -27,4 +27,5 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 ## Demo
 
 ![Calculator Demo](Images/Parentheses-Logic-&-Multiple-Equations-Demo.gif)
-![Division By Zero Demo](Images/Division-By-Zero-Demo.gif)
+
+[▶️ See Division By Zero Demo](Images/Division-By-Zero-Demo.gif)
