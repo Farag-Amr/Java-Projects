@@ -10,6 +10,8 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 - Negative numbers
 - Error handling for invalid input and division by zero
 
+> **Note:** Implicit multiplication (e.g., writing `2(3)` instead of `2x3` or `2x(3)`) is **not supported**. Always use the `x` button for multiplication.
+
 ## How to Run
 
 1. Clone the repository:
@@ -29,3 +31,7 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 ![Calculator Demo](Images/Parentheses-Logic-&-Multiple-Equations-Demo.gif)
 
 [▶️ See Division By Zero Demo](Images/Division-By-Zero-Demo.gif)
+
+[▶️ See Operator Logic Demo](Images/Operator-Logic.gif)
+
+[▶️ Zero Handling Logic Demo](Images/Zero-Handling-Logic.gif)
