@@ -14,11 +14,11 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/Farag-Amr/Java-Projects.git
    ```
-2. Open the project in your IDE (e.g., VS Code or IntelliJ).
+2. Open the project in your IDE
 3. Compile and run `Calculator.java`.
 
 ## Screenshot
 
-![Calculator Screenshot](screenshot.png)
+[Calculator Screenshot](image-1.png)
