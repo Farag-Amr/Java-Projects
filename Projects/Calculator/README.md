@@ -21,4 +21,5 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 
 ## Screenshot
 
-[Calculator Screenshot](image-1.png)
+![Empty Calculator](Images/image-1.png)
+![Calculator With Equation](Images/image.png)
