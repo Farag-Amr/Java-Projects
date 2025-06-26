@@ -23,3 +23,8 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 
 ![Empty Calculator](Images/image-1.png)
 ![Calculator With Equation](Images/image.png)
+
+## Demo
+
+![Calculator Demo](Images/Parentheses-Logic-&-Multiple-Equations-Demo.gif)
+![Division By Zero Demo](Images/Division-By-Zero-Demo.gif)
