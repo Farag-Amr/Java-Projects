@@ -28,48 +28,29 @@ Features a main menu, customizable colors for X and O, and win counters.
 
 <h2>Screenshots</h2>
 
-<h3>Main Menu</h3>
+### Main Menu
 
 ![Main Menu](Images/Main-Menu.png)
 
-<h3>Colors Menu</h3>
+### Colors Menu
 
 ![Colors Menu](Images/Colors-Menu.png)
 
-<p float="left" align="center">
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/Colors-Menu-Options.png" width="350"/>
-    <figcaption><b>Colors Options</b></figcaption>
-  </figure>
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/Colors-Menu-Selected.png" width="350"/>
-    <figcaption><b>Selected Colors</b></figcaption>
-  </figure>
-</p>
+### Colors Options and Selected Colors
 
-<h3>Game Board States</h3>
+|                     Colors Options                     |                     Selected Colors                      |
+| :----------------------------------------------------: | :------------------------------------------------------: |
+| ![Colors Menu Options](Images/Colors-Menu-Options.png) | ![Colors Menu Selected](Images/Colors-Menu-Selected.png) |
 
-<p float="left" align="center">
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/GameBoard-Empty.png" width="350"/>
-    <figcaption><b>Empty Game Board</b></figcaption>
-  </figure>
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/GameBoard-Draw.png" width="350"/>
-    <figcaption><b>Draw</b></figcaption>
-  </figure>
-</p>
+### Game Board States
 
-<p float="left" align="center">
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/GameBoard-X-Wins.png" width="350"/>
-    <figcaption><b>X Wins</b></figcaption>
-  </figure>
-  <figure style="display:inline-block; margin:10px;">
-    <img src="Images/GameBoard-O-Wins.png" width="350"/>
-    <figcaption><b>O Wins</b></figcaption>
-  </figure>
-</p>
+|                Empty Game Board                 |                Draw                |
+| :---------------------------------------------: | :--------------------------------: |
+| ![Empty Game Board](Images/GameBoard-Empty.png) | ![Draw](Images/GameBoard-Draw.png) |
+
+|                 X Wins                 |                 O Wins                 |
+| :------------------------------------: | :------------------------------------: |
+| ![X Wins](Images/GameBoard-X-Wins.png) | ![O Wins](Images/GameBoard-O-Wins.png) |
 
 ## Notes
 
