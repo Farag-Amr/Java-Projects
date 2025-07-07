@@ -14,7 +14,7 @@ Supports addition, subtraction, multiplication, division, exponents, parentheses
 
 ## How to Run
 
-1. Clone the repository:
+1. If you haven't already, clone the repository:
    ```sh
    git clone https://github.com/Farag-Amr/Java-Projects.git
    ```

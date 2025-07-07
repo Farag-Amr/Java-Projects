@@ -15,7 +15,7 @@ Features a main menu, customizable colors for X and O, and win counters.
 
 <h2>How To Run</h2>
 
-1. Clone the repository:
+1. If you haven't already, clone the repository:
    ```sh
    git clone https://github.com/Farag-Amr/Java-Projects.git
    ```
