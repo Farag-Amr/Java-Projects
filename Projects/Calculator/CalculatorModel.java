@@ -25,6 +25,16 @@ public class CalculatorModel {
         if (isErrorState) {
             clear();
         }
+        // Prevent two operators in a row
+        if (!tokens.isEmpty()) {
+            Token lastToken = tokens.get(tokens.size() - 1);
+            boolean lastIsOp = lastToken.getType() == TokenType.OPERATOR;
+            boolean inputIsOp = "+-x÷^".contains(input);
+            if (lastIsOp && inputIsOp) {
+                // Ignores the input if it's an operator after another operator
+                return;
+            }
+        }
         // Re-tokenize the entire expression after each input
         String currentExpression = getExpressionString() + input;
         try {
