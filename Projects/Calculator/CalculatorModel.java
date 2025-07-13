@@ -25,13 +25,17 @@ public class CalculatorModel {
         if (isErrorState) {
             clear();
         }
-        // Prevent two operators in a row
         if (!tokens.isEmpty()) {
             Token lastToken = tokens.get(tokens.size() - 1);
             boolean lastIsOp = lastToken.getType() == TokenType.OPERATOR;
-            boolean inputIsOp = "+-x÷^".contains(input);
-            if (lastIsOp && inputIsOp) {
-                // Ignores the input if it's an operator after another operator
+            boolean inputIsOp = "+x÷^".contains(input); // Only operators except '-'
+            boolean lastIsLeftParen = lastToken.getType() == TokenType.LEFT_PAREN;
+            // Blocks operators (except '-') after LEFT_PAREN
+            if (lastIsLeftParen && inputIsOp) {
+                return;
+            }
+            // Prevent two operators in a row
+            if (lastIsOp && "+-x÷^".contains(input)) {
                 return;
             }
         }
@@ -56,9 +60,31 @@ public class CalculatorModel {
 
         switch (text) {
             case "()":
-                // This logic can be made much smarter, but for now, it's a placeholder.
-                // A better approach would be to analyze the token list.
-                addInput("("); // Simplified
+                // Smart parentheses logic
+                int openCount = 0, closeCount = 0;
+                for (Token t : tokens) {
+                    if (t.getType() == TokenType.LEFT_PAREN)
+                        openCount++;
+                    if (t.getType() == TokenType.RIGHT_PAREN)
+                        closeCount++;
+                }
+                Token lastToken = tokens.isEmpty() ? null : tokens.get(tokens.size() - 1);
+
+                // Decide whether to insert '(' or ')'
+                boolean insertOpen = tokens.isEmpty() ||
+                        (lastToken != null && (lastToken.getType() == TokenType.OPERATOR ||
+                                lastToken.getType() == TokenType.LEFT_PAREN));
+
+                boolean insertClose = openCount > closeCount &&
+                        lastToken != null &&
+                        (lastToken.getType() == TokenType.NUMBER || lastToken.getType() == TokenType.RIGHT_PAREN);
+
+                if (insertOpen) {
+                    addInput("(");
+                } else if (insertClose) {
+                    addInput(")");
+                }
+                // If neither, do nothing (prevents invalid parentheses)
                 break;
             case "Del":
                 deleteLast();
