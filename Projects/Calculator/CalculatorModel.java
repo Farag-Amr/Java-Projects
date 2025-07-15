@@ -124,8 +124,10 @@ public class CalculatorModel {
         // Count parentheses
         int openCount = 0, closeCount = 0;
         for (Token t : tokens) {
-            if (t.getType() == TokenType.LEFT_PAREN) openCount++;
-            if (t.getType() == TokenType.RIGHT_PAREN) closeCount++;
+            if (t.getType() == TokenType.LEFT_PAREN)
+                openCount++;
+            if (t.getType() == TokenType.RIGHT_PAREN)
+                closeCount++;
         }
 
         // If there are unmatched opening parentheses, add closing ones
@@ -154,11 +156,14 @@ public class CalculatorModel {
             tokens.clear();
             isErrorState = false;
 
+            // Round the result to 5 decimal places
+            double roundedResult = Math.round(result * 100_000.0) / 100_000.0;
+
             // Format result as integer if possible
-            if (result == (long) result) {
-                tokens.addAll(Lexer.tokenize(String.valueOf((long) result)));
+            if (roundedResult == (long) roundedResult) {
+                tokens.addAll(Lexer.tokenize(String.valueOf((long) roundedResult)));
             } else {
-                tokens.addAll(Lexer.tokenize(String.valueOf(result)));
+                tokens.addAll(Lexer.tokenize(String.valueOf(roundedResult)));
             }
 
         } catch (Exception e) {
