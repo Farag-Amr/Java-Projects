@@ -91,3 +91,28 @@ Parser/                                 // Parsing and evaluation pipeline
    ```sh
    git clone https://github.com/Farag-Amr/Java-Projects.git
    ```
+2. Navigate to the project directory:
+3. Compile the Java files:
+4. Run the application:
+---
+
+## 🚀 Potential Future Features
+
+The calculator is designed with extensibility in mind. Here are some planned or possible future updates:
+
+**Keyboard Input Support:**  
+  Allow users to enter numbers and operations directly from the keyboard for faster input.
+
+**Expression History:**  
+  Display a list of previous calculations and results, making it easy to review or reuse past expressions.
+
+**Highlight Matching Parentheses:**  
+  Visually highlight matching parentheses in the input to help users track complex expressions.
+
+**Support for Functions (sqrt, sin, cos, tan):**  
+  Add support for common mathematical functions, enabling scientific calculator capabilities.
+
+**Dark Mode:**  
+  Provide a dark theme option for improved accessibility and user comfort in low-light environments.
+
+---
