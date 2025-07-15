@@ -121,6 +121,27 @@ public class CalculatorModel {
             return;
         }
 
+        // Count parentheses
+        int openCount = 0, closeCount = 0;
+        for (Token t : tokens) {
+            if (t.getType() == TokenType.LEFT_PAREN) openCount++;
+            if (t.getType() == TokenType.RIGHT_PAREN) closeCount++;
+        }
+
+        // If there are unmatched opening parentheses, add closing ones
+        int missing = openCount - closeCount;
+        if (missing > 0) {
+            StringBuilder expr = new StringBuilder(getExpressionString());
+            for (int i = 0; i < missing; i++) {
+                expr.append(")");
+            }
+            // Retokenize with added closing parentheses
+            tokens.clear();
+            tokens.addAll(Lexer.tokenize(expr.toString()));
+            // Do NOT evaluate, just update the display
+            return;
+        }
+
         try {
             // 1. Convert infix token list to postfix (RPN) queue
             ShuntingYardParser parser = new ShuntingYardParser(tokens);
