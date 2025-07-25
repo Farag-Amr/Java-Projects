@@ -47,3 +47,12 @@ Features a main menu, customizable colors for X and O, win counters, and a polis
 1. **Clone this repository:**
    ```sh
    git clone https://github.com/Farag-Amr/Java-Projects.git
+   ```
+
+---
+
+## Disclaimer
+
+The projects in this repository were created with the assistance of AI tools.
+
+---
